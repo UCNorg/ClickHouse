@@ -269,7 +269,7 @@ def main():
     repo_path = Path(REPO_COPY)
 
     args = parse_args()
-    check_name = args.check_name or os.getenv("CHECK_NAME")
+    check_name = os.getenv("CHECK_NAME") or os.getenv("JOB_NAME") or args.check_name
     assert (
         check_name
     ), "Check name must be provided as an input arg or in CHECK_NAME env"
@@ -303,7 +303,14 @@ def main():
     if validate_bugfix_check:
         download_last_release(packages_path, debug=True)
     else:
-        download_all_deb_packages(check_name, reports_path, packages_path)
+        if "amd_" in check_name or "arm_" in check_name:
+            # this is hack for praktika based CI
+            print("Copy input *.deb artifacts")
+            assert Shell.check(
+                f"cp {REPO_COPY}/ci/tmp/*.deb {packages_path}", verbose=True
+            )
+        else:
+            download_all_deb_packages(check_name, reports_path, packages_path)
 
     server_log_path = temp_path / "server_log"
     server_log_path.mkdir(parents=True, exist_ok=True)
