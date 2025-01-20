@@ -549,13 +549,14 @@ class _ResultS3:
     #     return True
 
     @classmethod
-    def upload_result_files_to_s3(cls, result: Result, s3_subprefix="", _uploaded_file_link=None):
+    def upload_result_files_to_s3(
+        cls, result: Result, s3_subprefix="", _uploaded_file_link=None
+    ):
         s3_subprefix = "/".join([s3_subprefix, Utils.normalize_string(result.name)])
+
         if not _uploaded_file_link:
             _uploaded_file_link = {}
-        if result.results:
-            for result_ in result.results:
-                cls.upload_result_files_to_s3(result_, s3_subprefix=s3_subprefix, _uploaded_file_link=_uploaded_file_link)
+
         for file in result.files:
             if not Path(file).is_file():
                 print(f"ERROR: Invalid file [{file}] in [{result.name}] - skip upload")
@@ -582,6 +583,14 @@ class _ResultS3:
                 _uploaded_file_link[file] = file_link
             result.links.append(file_link)
         result.files = []
+
+        if result.results:
+            for result_ in result.results:
+                cls.upload_result_files_to_s3(
+                    result_,
+                    s3_subprefix=s3_subprefix,
+                    _uploaded_file_link=_uploaded_file_link,
+                )
         result.dump()
 
     @classmethod

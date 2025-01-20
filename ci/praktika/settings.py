@@ -22,6 +22,8 @@ class _Settings:
     DOCKER_BUILD_RUNS_ON: Optional[List[str]] = None
     VALIDATE_FILE_PATHS: bool = True
     PIPELINE_PRECHECKS: Optional[List[Union[str, callable]]] = None
+    PIPELINE_POSTCHECKS: Optional[List[Union[str, callable]]] = None
+    DISABLED_WORKFLOWS: Optional[List[str]] = None
 
     ######################################
     #    Runtime Settings                #
@@ -121,6 +123,8 @@ _USER_DEFINED_SETTINGS = [
     "MAIN_BRANCH",
     "DISABLE_MERGE_COMMIT",
     "PIPELINE_PRECHECKS",
+    "PIPELINE_POSTCHECKS",
+    "DISABLED_WORKFLOWS",
 ]
 
 
